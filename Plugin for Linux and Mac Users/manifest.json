@@ -1,0 +1,26 @@
+{
+   "background_page": "background.html",
+   "description": "A plugin for SmoothGestures to work around some Chrome limitations. Fixes the context menu, omnibar focusing, \"reopen closed tab\", page zooming, etc.",
+   "icons": {
+      "128": "icon128.png",
+      "16": "icon16.png",
+      "32": "icon32.png",
+      "48": "icon48.png"
+   },
+   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDZQaOz4wSx3AJcU6F4SUPPaeMwSHuzOIjy1zW5Ots1YicAU1psLpX6+CBd9m1loUdo7vGAV+CDZ/SuTA1hOErkRvkQJVlT1EWZGdp7RGhH31oOSFzp9/rlV9XSH079iMDMYUArI/j5tmzzE1lirbLmD3Qgz4FZejFxezzBGTsURQIDAQAB",
+   "name": "SmoothGestures: Plugin",
+   "permissions": [ "tabs" ],
+   "plugins": [ {
+      "path": "npSmoothGesturesPlugin.plugin"
+   }, {
+      "path": "npSmoothGesturesPlugin.so"
+   }, {
+      "path": "npSmoothGesturesPlugin32.so"
+   }, {
+      "path": "npSmoothGesturesPlugin.dll"
+   }, {
+      "path": "npSmoothGesturesPlugin32.dll"
+   } ],
+   "update_url": "http://smoothgestures-chromium.googlecode.com/files/updates.xml",
+   "version": "0.8"
+}

@@ -1,0 +1,76 @@
+<html>
+<head>
+</head>
+<body>
+<object id="plugin" type="application/x-smoothgesturesplugin" width="300" height="300"></object>
+<script>
+var navWin = navigator.platform.indexOf("Win") != -1;
+var navMac = navigator.platform.indexOf("Mac") != -1;
+var navLinux = navigator.platform.indexOf("Linux") != -1;
+
+var plugin = document.getElementById('plugin');
+var sgport = null;
+
+var map = {};
+//mod keys
+map["shift"] = 0xffe1;
+map["shift_r"] = 0xffe2;
+map["ctrl"] = 0xffe3;
+map["ctrl_r"] = 0xffe4;
+map["capslock"] = 0xffe5;
+map["shiftlock"] = 0xffe6;
+map["meta"] = 0xffe7;
+map["meta_r"] = 0xffe8;
+map["alt"] = 0xffe9;
+map["alt_r"] = 0xffea;
+map["super"] = 0xffeb;
+map["super_r"] = 0xffec;
+map["hyper"] = 0xffed;
+map["hyper_r"] = 0xffee;
+//F keys
+for(i=1; i<=35; i++)
+  map["f"+i] = 0xffbd+i;
+
+var getKeyCode = function(key) {
+  if(!key) return 0;
+  return map[key.toLowerCase()] || (key.length==1?key.toLowerCase().charCodeAt(0):0);
+}
+
+var connect = function(sgid) {
+  sgport = chrome.extension.connect(sgid, {name: "sgplugin"});
+  sgport.onMessage.addListener(function(mess) {
+    mess = JSON.parse(mess);
+    if(mess.sendbutton) plugin.sendbutton(mess.sendbutton);
+    if(mess.sendkey) {
+      var mod1 = mess.sendkey.mods?getKeyCode(mess.sendkey.mods[0]):0;
+      var mod2 = mess.sendkey.mods?getKeyCode(mess.sendkey.mods[1]):0;
+      for(i=0; i<mess.sendkey.keys.length; i++) {
+        plugin.sendkey(getKeyCode(mess.sendkey.keys[i]), mod1,mod2);
+      }
+    }
+  });
+  sgport.onDisconnect.addListener(function() {sgport = null;});
+}
+chrome.extension.onRequestExternal.addListener(function(request, sender, respond) {
+  if(sender.id != "nmndalkkpgannmgccacmlmpaphdjbdkd") return;
+  if(request.connectplugin) connect(sender.id);
+  if(request.getexternalactions) sendExternalActions(sender.id);
+  if(request.doaction == "fullscreen") plugin.sendkey(getKeyCode(navMac?"F":"F11"), navMac?getKeyCode("alt"):0,navMac?getKeyCode("shift"):0);
+  if(request.doaction == "devtools") plugin.sendkey(getKeyCode("I"),getKeyCode(navMac?"alt":"ctrl"),getKeyCode(navMac?"super":"shift"));
+  if(request.doaction == "save") plugin.sendkey(getKeyCode("s"),getKeyCode(navMac?"alt":"ctrl"),0);
+  respond(null);
+});
+
+var sendExternalActions = function(sgid) {
+  chrome.extension.sendRequest(sgid, {externalactions: {name:"Smooth Gestures: Plugin", actions:[
+    {id:"fullscreen", title:"Fullscreen", descrip:"Fullscreen mode for the current page"},
+    {id:"devtools", title:"Open Developer Tools", descrip:"Open the developer tools for the current page"},
+    {id:"save", title:"Save Page", descrip:"Save the current page"}
+  ]}});
+}
+
+connect("nmndalkkpgannmgccacmlmpaphdjbdkd");
+sendExternalActions("nmndalkkpgannmgccacmlmpaphdjbdkd");
+</script>
+</body>
+</html>
